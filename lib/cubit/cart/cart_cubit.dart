@@ -28,7 +28,6 @@ class CartCubit extends Cubit<CartState> {
 
   void removeOneQuantity({required ProductResults model}) {
     if (quantity > 1) quantity--;
-    // amunt = quantity * price;
     model.quantity = quantity;
     emit(RemoveOneQuantityState());
   }
@@ -36,13 +35,16 @@ class CartCubit extends Cubit<CartState> {
   void delete({required int index}) {
     Hive.box("cart").deleteAt(index);
     countOfItemInCart = Hive.box("cart").length;
+    getTotal();
     emit(DeleteItemState());
   }
 
   void getTotal() {
+    total = 0;
     for (int i = 0; i < Hive.box("cart").length; i++) {
       ProductResults results = Hive.box("cart").getAt(i);
       total = total + (results.quantity! * double.parse(results.price!));
+      print(total.toString());
     }
   }
 }

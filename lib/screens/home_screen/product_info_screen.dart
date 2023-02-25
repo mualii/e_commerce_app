@@ -53,7 +53,7 @@ class ProductsInfoScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  HomeCubit.get(context).putAndRemoveInFavBoxForAllProd(
+                  HomeCubit.get(context).putAndRemoveInFavBoxForProducts(
                       index: index, isFav: model.isFav!, id: model.id!);
                 },
                 child: Container(
@@ -179,7 +179,7 @@ class ProductsInfoScreen extends StatelessWidget {
                                   width: 45.w,
                                   onTap: () {
                                     HomeCubit.get(context).addOneQuantity(
-                                        index: index,
+                                        id: model.id!,
                                         price: double.parse(
                                             model.price.toString()));
                                   },
@@ -204,7 +204,7 @@ class ProductsInfoScreen extends StatelessWidget {
                                   width: 45.w,
                                   onTap: () {
                                     HomeCubit.get(context).removeOneQuantity(
-                                        index: index,
+                                        id: model.id!,
                                         price: double.parse(
                                             model.price.toString()));
                                   },
@@ -252,6 +252,7 @@ class ProductsInfoScreen extends StatelessWidget {
                         height: 44.h,
                         width: 158.h,
                         onTap: () {
+                          HomeCubit.get(context).addToCart(id: model.id!);
                           CartCubit.get(context).addToCart(model: model);
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(

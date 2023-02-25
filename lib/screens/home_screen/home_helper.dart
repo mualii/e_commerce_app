@@ -121,92 +121,131 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const CastAppBar(),
-        BlocConsumer<HomeCubit, HomeState>(
-          listener: (context, state) {
-            if (state is FavState) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 1),
-                content: Text('تم وضع في المفضلة'),
-              ));
-            }
-            if (state is RemoveFavState) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 1),
-                content: Text('تم اذالة من المفضلة'),
-              ));
-            }
-          },
-          builder: (context, state) {
-            var categoriesModel = HomeCubit.get(context).categoriesModel;
-            var productModel = HomeCubit.get(context).productsModel;
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
-                children: [
-                  SizedBox(height: 32.h),
-                  SizedBox(
-                    height: 85.h,
-                    child: state is ProductSuccessState ||
-                            categoriesModel.results != null
-                        ? ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) =>
-                                ListViewBody(
-                                    model: categoriesModel.results![index]),
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
-                                      width: 8.w,
-                                    ),
-                            itemCount: categoriesModel.results!.length)
-                        : const Center(
-                            child: CircularProgressIndicator.adaptive()),
-                  ),
-                  SizedBox(height: 34.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "وصل حديثا",
-                        style: AppTextStyle.tajawalBoldText14,
-                      ),
-                      Text(
-                        "عرض الكل",
-                        style: AppTextStyle.subtitel12,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7.h,
-                  ),
-                  SizedBox(
-                    height: 205.h,
-                    child: state is ProductSuccessState ||
-                            productModel.results != null
-                        ? ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) =>
-                                ItemListViewBody(
-                                    model: productModel.results![index],
-                                    index: index),
-                            separatorBuilder:
-                                (BuildContext context, int index) => SizedBox(
-                                      width: 8.w,
-                                    ),
-                            itemCount: productModel.results!.length)
-                        : const Center(
-                            child: CircularProgressIndicator.adaptive()),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const CastAppBar(),
+          BlocConsumer<HomeCubit, HomeState>(
+            listener: (context, state) {
+              if (state is FavState) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 1),
+                  content: Text('تم وضع في المفضلة'),
+                ));
+              }
+              if (state is RemoveFavState) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 1),
+                  content: Text('تم اذالة من المفضلة'),
+                ));
+              }
+            },
+            builder: (context, state) {
+              var categoriesModel = HomeCubit.get(context).categoriesModel;
+              var productMRModel =
+                  HomeCubit.get(context).productsMostRecentModel;
+              var productMpModel =
+                  HomeCubit.get(context).productsMostPopularModel;
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  children: [
+                    SizedBox(height: 32.h),
+                    SizedBox(
+                      height: 85.h,
+                      child: categoriesModel.results != null
+                          ? ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  ListViewBody(
+                                      model: categoriesModel.results![index]),
+                              separatorBuilder:
+                                  (BuildContext context, int index) => SizedBox(
+                                        width: 8.w,
+                                      ),
+                              itemCount: categoriesModel.results!.length)
+                          : const Center(
+                              child: CircularProgressIndicator.adaptive()),
+                    ),
+                    SizedBox(height: 34.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "وصل حديثا",
+                          style: AppTextStyle.tajawalBoldText14,
+                        ),
+                        Text(
+                          "عرض الكل",
+                          style: AppTextStyle.subtitel12,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 7.h,
+                    ),
+                    SizedBox(
+                      height: 205.h,
+                      child: state is PMRSuccessState ||
+                              productMRModel.results != null
+                          ? ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  ItemListViewBody(
+                                      model: productMRModel.results![index],
+                                      index: index),
+                              separatorBuilder:
+                                  (BuildContext context, int index) => SizedBox(
+                                        width: 8.w,
+                                      ),
+                              itemCount: productMRModel.results!.length)
+                          : const Center(
+                              child: CircularProgressIndicator.adaptive()),
+                    ),
+                    SizedBox(height: 34.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "الأكثر شعبية",
+                          style: AppTextStyle.tajawalBoldText14,
+                        ),
+                        Text(
+                          "عرض الكل",
+                          style: AppTextStyle.subtitel12,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 7.h,
+                    ),
+                    SizedBox(
+                      height: 205.h,
+                      child: state is PMPSuccessState ||
+                              productMpModel.results != null
+                          ? ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  ItemListViewBody(
+                                      model: productMpModel.results![index],
+                                      index: index),
+                              separatorBuilder:
+                                  (BuildContext context, int index) => SizedBox(
+                                        width: 8.w,
+                                      ),
+                              itemCount: productMpModel.results!.length)
+                          : const Center(
+                              child: CircularProgressIndicator.adaptive()),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -243,7 +282,7 @@ class ItemListViewBody extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    HomeCubit.get(context).putAndRemoveInFavBoxForAllProd(
+                    HomeCubit.get(context).putAndRemoveInFavBoxForProducts(
                         index: index, isFav: model.isFav!, id: model.id!);
                   },
                   child: model.isFav == false
@@ -291,8 +330,6 @@ class ItemListViewBody extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        // HomeCubit.get(context)
-                        //     .getProductsByIdImpl(id: model.id.toString());
                         navigateTo(
                             context,
                             ProductsInfoScreen(
@@ -300,9 +337,11 @@ class ItemListViewBody extends StatelessWidget {
                               index: index,
                             ));
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.add_shopping_cart_outlined,
-                        color: Colors.grey,
+                        color: model.inCart == true
+                            ? AppColors.colorPrimary
+                            : Colors.grey,
                         size: 16,
                       ),
                     )

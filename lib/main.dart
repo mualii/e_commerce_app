@@ -2,7 +2,7 @@ import 'package:e_commerce_app_muhammed_ali/cubit/categories/categories_cubit.da
 import 'package:e_commerce_app_muhammed_ali/cubit/home/home_cubit.dart';
 import 'package:e_commerce_app_muhammed_ali/cubit/register/register_cubit.dart';
 import 'package:e_commerce_app_muhammed_ali/local_storage/shared_preferences_manager.dart';
-import 'package:e_commerce_app_muhammed_ali/screens/auth_screens/login_screen.dart';
+import 'package:e_commerce_app_muhammed_ali/screens/layout_screen/layout_screen.dart';
 import 'package:e_commerce_app_muhammed_ali/shared/bloc_observer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +70,8 @@ class MyApp extends StatelessWidget {
                   primarySwatch: Colors.orange,
                   fontFamily: "Tajawal",
                 ),
-                home: LoginScreen(),
-                // home: LayoutScreen(),
+                // home: LoginScreen(),
+                home: LayoutScreen(),
                 // home: CartScreen(),
               );
             }));

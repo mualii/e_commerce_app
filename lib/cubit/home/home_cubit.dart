@@ -15,8 +15,9 @@ class HomeCubit extends Cubit<HomeState> {
   DioManager dioManager = DioManager();
 
   CategoriesModel categoriesModel = CategoriesModel();
-  ProductsModel productsModel = ProductsModel();
-
+  // ProductsModel productsModel = ProductsModel();
+  ProductsModel productsMostPopularModel = ProductsModel();
+  ProductsModel productsMostRecentModel = ProductsModel();
   Future<void> getCategoriesImpl() async {
     emit(CategoriesLoadingState());
 
@@ -24,61 +25,162 @@ class HomeCubit extends Cubit<HomeState> {
         await dioManager.getCategoriesAsync();
     respond.fold((left) {
       emit(CategoriesErrorState());
-      debugPrint("Get Categories Impl Failed");
     }, (right) {
       categoriesModel = right;
-      getProductsImpl();
-      debugPrint(categoriesModel.results![0].name.toString());
+      // getProductsImpl();
+      getMostPopulerProductsImpl();
+      getMostRecentProductsImpl();
     });
   }
 
-  Future<void> getProductsImpl() async {
-    emit(ProductLoadingState());
-    Either<String, ProductsModel> respond = await dioManager.getProductsAsync();
+  // Future<void> getProductsImpl() async {
+  //   emit(ProductLoadingState());
+  //   Either<String, ProductsModel> respond = await dioManager.getProductsAsync();
+  //   respond.fold((left) {
+  //     emit(ProductErrorState());
+  //   }, (right) {
+  //     productsModel = right;
+  //     emit(ProductSuccessState());
+  //   });
+  // }
+
+  Future<void> getMostPopulerProductsImpl() async {
+    emit(PMPLoadingState());
+    Either<String, ProductsModel> respond =
+        await dioManager.getProductsByCatAsync(catId: "1");
     respond.fold((left) {
-      emit(ProductErrorState());
-      debugPrint("Get Categories Impl Failed");
+      emit(PMPErrorState());
     }, (right) {
-      productsModel = right;
+      productsMostPopularModel = right;
 
-      emit(ProductSuccessState());
-      debugPrint(productsModel.results![0].name.toString());
+      emit(PMPSuccessState());
     });
   }
 
-  void putAndRemoveInFavBoxForAllProd(
+  Future<void> getMostRecentProductsImpl() async {
+    emit(PMRLoadingState());
+    Either<String, ProductsModel> respond =
+        await dioManager.getProductsByCatAsync(catId: "5");
+    respond.fold((left) {
+      emit(PMRErrorState());
+    }, (right) {
+      productsMostRecentModel = right;
+
+      emit(PMRSuccessState());
+    });
+  }
+
+  void putAndRemoveInFavBoxForProducts(
       {required int index, required bool isFav, required int id}) async {
     if (isFav) {
-      for (var item in productsModel.results!) {
+      // for (var item in productsModel.results!) {
+      //   if (item.id == id) {
+      //     item.isFav = false;
+      //     Hive.box("fav").delete(item.id);
+      //   }
+      // }
+      for (var item in productsMostRecentModel.results!) {
         if (item.id == id) {
           item.isFav = false;
+          Hive.box("fav").delete(item.id);
         }
       }
-      Hive.box("fav").delete(productsModel.results![index].id);
-      debugPrint(Hive.box("fav").length.toString());
+      for (var item in productsMostPopularModel.results!) {
+        if (item.id == id) {
+          item.isFav = false;
+          Hive.box("fav").delete(item.id);
+        }
+      }
+
       emit(RemoveFavState());
     } else {
-      productsModel.results![index].isFav = true;
-      ProductResults productResults = productsModel.results![index];
-      Hive.box("fav").put(productsModel.results![index].id, productResults);
+      // for (var item in productsModel.results!) {
+      //   if (item.id == id) {
+      //     item.isFav = true;
+      //     Hive.box("fav").put(item.id, item);
+      //   }
+      // }
+      for (var item in productsMostPopularModel.results!) {
+        if (item.id == id) {
+          item.isFav = true;
+          Hive.box("fav").put(item.id, item);
+        }
+      }
+      for (var item in productsMostRecentModel.results!) {
+        if (item.id == id) {
+          item.isFav = true;
+          Hive.box("fav").put(item.id, item);
+        }
+      }
       emit(FavState());
     }
-    debugPrint(productsModel.results![index].isFav.toString());
   }
 
   int quantity = 1;
   double amunt = 0;
-  void addOneQuantity({required double price, required int index}) {
+  void addOneQuantity({
+    required double price,
+    required int id,
+  }) {
     quantity++;
     amunt = quantity * price;
-    productsModel.results![index].quantity = quantity;
+    for (var item in productsMostRecentModel.results!) {
+      if (item.id == id) {
+        item.quantity = quantity;
+      }
+    }
+    for (var item in productsMostPopularModel.results!) {
+      if (item.id == id) {
+        item.quantity = quantity;
+      }
+    }
     emit(AddOneQuantityState());
   }
 
-  void removeOneQuantity({required double price, required int index}) {
+  void removeOneQuantity({
+    required double price,
+    required int id,
+  }) {
     if (quantity > 1) quantity--;
     amunt = quantity * price;
-    productsModel.results![index].quantity = quantity;
+    for (var item in productsMostRecentModel.results!) {
+      if (item.id == id) {
+        item.quantity = quantity;
+      }
+    }
+    for (var item in productsMostPopularModel.results!) {
+      if (item.id == id) {
+        item.quantity = quantity;
+      }
+    }
     emit(RemoveOneQuantityState());
+  }
+
+  void addToCart({required int id}) {
+    for (var item in productsMostRecentModel.results!) {
+      if (item.id == id) {
+        item.inCart = true;
+      }
+    }
+    for (var item in productsMostPopularModel.results!) {
+      if (item.id == id) {
+        item.inCart = true;
+      }
+    }
+    emit(AddToCartState());
+  }
+
+  void removeFromCart({required int id}) {
+    for (var item in productsMostRecentModel.results!) {
+      if (item.id == id) {
+        item.inCart = false;
+      }
+    }
+    for (var item in productsMostPopularModel.results!) {
+      if (item.id == id) {
+        item.inCart = false;
+      }
+    }
+    emit(RemoveFromCartState());
   }
 }

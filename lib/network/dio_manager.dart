@@ -71,4 +71,16 @@ class DioManager {
       return const Left("error");
     }
   }
+
+  Future<Either<String, ProductsModel>> getProductsByCatAsync(
+      {required String catId}) async {
+    try {
+      Response response = await dioClient.get(
+        Endpoints.PRODUCTSBY_BY_CATEGORIES_ID + catId,
+      );
+      return Right(ProductsModel.fromJson(response.data));
+    } on DioError catch (e) {
+      return const Left("error");
+    }
+  }
 }

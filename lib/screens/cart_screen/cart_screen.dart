@@ -1,4 +1,5 @@
 import 'package:e_commerce_app_muhammed_ali/cubit/cart/cart_cubit.dart';
+import 'package:e_commerce_app_muhammed_ali/cubit/home/home_cubit.dart';
 import 'package:e_commerce_app_muhammed_ali/shared/colors_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class CartScreen extends StatelessWidget {
                 }
               },
               builder: (context, state) {
+                CartCubit.get(context).getTotal();
                 return Padding(
                   padding: EdgeInsets.all(17.0.r),
                   child: Column(
@@ -212,6 +214,9 @@ class CartScreen extends StatelessWidget {
                                               onPressed: () {
                                                 CartCubit.get(context)
                                                     .delete(index: index);
+                                                HomeCubit.get(context)
+                                                    .removeFromCart(
+                                                        id: model.id!);
                                               },
                                               icon: const Icon(
                                                 Icons.delete_forever,

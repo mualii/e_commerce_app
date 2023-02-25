@@ -62,7 +62,7 @@ class FavScreen extends StatelessWidget {
                                             ),
                                             onPressed: () {
                                               HomeCubit.get(context)
-                                                  .putAndRemoveInFavBoxForAllProd(
+                                                  .putAndRemoveInFavBoxForProducts(
                                                       index: index,
                                                       id: favProd.id!,
                                                       isFav: true);
@@ -80,6 +80,8 @@ class FavScreen extends StatelessWidget {
                                       height: 40.h,
                                       width: double.infinity,
                                       onTap: () {
+                                        HomeCubit.get(context)
+                                            .addToCart(id: favProd.id!);
                                         CartCubit.get(context)
                                             .addToCart(model: favProd);
                                       },
