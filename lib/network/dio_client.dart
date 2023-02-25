@@ -5,10 +5,8 @@ import 'package:e_commerce_app_muhammed_ali/network/reques_iInterceptor.dart';
 import 'exceptions_interceptor.dart';
 
 class DioClient {
-  // dio instance
   final Dio _dio;
 
-  // injecting dio instance
   DioClient(this._dio) {
     _dio
       ..options.baseUrl = Endpoints.baseUrl

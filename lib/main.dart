@@ -32,7 +32,7 @@ void main() async {
   ]);
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('ar')], //must be in this arrangement
+      supportedLocales: const [Locale('ar')],
       path: "assets/translations",
       startLocale: const Locale("ar"),
       saveLocale: true,

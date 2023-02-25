@@ -15,7 +15,6 @@ class HomeCubit extends Cubit<HomeState> {
   DioManager dioManager = DioManager();
 
   CategoriesModel categoriesModel = CategoriesModel();
-  // ProductsModel productsModel = ProductsModel();
   ProductsModel productsMostPopularModel = ProductsModel();
   ProductsModel productsMostRecentModel = ProductsModel();
   Future<void> getCategoriesImpl() async {
@@ -27,22 +26,10 @@ class HomeCubit extends Cubit<HomeState> {
       emit(CategoriesErrorState());
     }, (right) {
       categoriesModel = right;
-      // getProductsImpl();
       getMostPopulerProductsImpl();
       getMostRecentProductsImpl();
     });
   }
-
-  // Future<void> getProductsImpl() async {
-  //   emit(ProductLoadingState());
-  //   Either<String, ProductsModel> respond = await dioManager.getProductsAsync();
-  //   respond.fold((left) {
-  //     emit(ProductErrorState());
-  //   }, (right) {
-  //     productsModel = right;
-  //     emit(ProductSuccessState());
-  //   });
-  // }
 
   Future<void> getMostPopulerProductsImpl() async {
     emit(PMPLoadingState());
@@ -73,12 +60,6 @@ class HomeCubit extends Cubit<HomeState> {
   void putAndRemoveInFavBoxForProducts(
       {required int index, required bool isFav, required int id}) async {
     if (isFav) {
-      // for (var item in productsModel.results!) {
-      //   if (item.id == id) {
-      //     item.isFav = false;
-      //     Hive.box("fav").delete(item.id);
-      //   }
-      // }
       for (var item in productsMostRecentModel.results!) {
         if (item.id == id) {
           item.isFav = false;
@@ -94,12 +75,6 @@ class HomeCubit extends Cubit<HomeState> {
 
       emit(RemoveFavState());
     } else {
-      // for (var item in productsModel.results!) {
-      //   if (item.id == id) {
-      //     item.isFav = true;
-      //     Hive.box("fav").put(item.id, item);
-      //   }
-      // }
       for (var item in productsMostPopularModel.results!) {
         if (item.id == id) {
           item.isFav = true;

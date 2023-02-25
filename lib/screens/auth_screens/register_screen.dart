@@ -29,7 +29,6 @@ class RegisterScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      //
                       "assets/images/Group 247.png",
                       height: 96.h,
                       width: 130.65.w,
